@@ -3,7 +3,7 @@ from auth.login import login_component
 import json
 import streamlit as st
 
-from utils import load_json, save_json, _preprocess
+from utils import load_json, save_json, _preprocess, load_json_lines
 
 index_file = './index_file/the_merge.json'
 log_file = './log/demo_log.txt'
@@ -56,5 +56,16 @@ if __name__ == '__main__':
             reset_credit(user, credit)
 
         st.sidebar.write('hello {}, you have credit {}'.format(user, credit))
+
+        with st.expander('history'):
+            logs = load_json_lines(log_file)
+            st.write('')
+            st.write('')
+            st.write('')
+            for l in logs:
+                if l['user'] == user:
+                    st.write('Q: {}'.format(l.get('Q')))
+                    st.write('A: {}'.format(l.get('A')))
+                    st.write('--------------------')
 
 
