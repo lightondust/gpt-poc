@@ -1,8 +1,8 @@
 /config/auth.json
-/data/
+/data/*.txt
 /.idea/
 /.ipynb_checkpoints/
 /datas/
-/log/demo_log.txt
-/log/simple_app_log.txt
+/log/*.txt
 /config/users.json
+/index_file/*.json
