@@ -1,12 +1,12 @@
-import datetime
 from auth.login import login_component
-import json
 import streamlit as st
+from utils import log_result, show_history
 
 from utils import load_json, save_json, _preprocess, load_json_lines
 
 index_file = './index_file/the_merge.json'
 log_file = './log/demo_log.txt'
+max_tokens = 512
 
 
 def user_credit_path(user):
@@ -26,7 +26,7 @@ def reset_credit(user, credit):
 
 @st.cache(allow_output_mutation=True)
 def preprocess():
-    return _preprocess(index_file)
+    return _preprocess(index_file, max_tokens)
 
 
 if __name__ == '__main__':
@@ -40,32 +40,21 @@ if __name__ == '__main__':
         q = st.text_input('query:')
         lang = st.selectbox('Language:', ['', 'Japanese', 'English'])
         send_q = st.button('send')
-        model_selected = st.selectbox('predictor model:', list(llm_model.keys()))
-        index._llm = llm_model[model_selected]
+        # model_selected = st.selectbox('predictor model:', list(llm_model.keys()))
+        # index._llm = llm_model[model_selected]
 
         if send_q:
             if lang:
                 q += ' (in {})'.format(lang)
             res = index.query(q)
             st.markdown(res.response)
-            with open(log_file, 'a') as f:
-                n_str = datetime.datetime.now().strftime('%Y%m%d %H%M%S')
-                f.write('\n')
-                json.dump({'Q': q, 'A': res.response, 't': n_str, 'user': user}, f, ensure_ascii=False)
+
+            log_result(res, {'Q': q, 'user': user}, log_file)
             credit -= 1
             reset_credit(user, credit)
 
         st.sidebar.write('hello {}, you have credit {}'.format(user, credit))
 
-        with st.expander('history'):
-            logs = load_json_lines(log_file)
-            st.write('')
-            st.write('')
-            st.write('')
-            for l in logs:
-                if l['user'] == user:
-                    st.write('Q: {}'.format(l.get('Q')))
-                    st.write('A: {}'.format(l.get('A')))
-                    st.write('--------------------')
-
-
+        logs = load_json_lines(log_file)
+        logs = [l for l in logs if l.get('user') == user]
+        show_history(logs, index)
