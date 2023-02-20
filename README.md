@@ -1,3 +1,5 @@
+![cap.png](cap.png)
+
 # how to run
 
 Create an openai account to use the API, get your token.
