@@ -88,6 +88,9 @@ def show_history(logs, index: GPTSimpleVectorIndex):
                     for s in source:
                         txt = index.docstore.get_document(s['doc_id']).text[s['node_info']['start']: s['node_info']['end']]
                         st.write(txt[:300])
+                        show_all = st.button('show all node texts', key=l.get('t'))
+                        if show_all:
+                            st.write(txt)
                 except:
                     pass
             st.write('--------------------')

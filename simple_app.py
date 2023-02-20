@@ -1,7 +1,7 @@
 import streamlit as st
 from utils import _preprocess, log_result, show_history, load_json_lines
 
-index_file = './index_file/the_merge.json'
+index_file = './index_file/gpt_index_docs.json'
 log_file = './log/simple_app_log.txt'
 max_tokens = 512
 
